@@ -1,5 +1,6 @@
 const express = require('express');
 const readTalkers = require('./utils/readFile');
+const createToken = require('./utils/createToken');
 
 const app = express();
 
@@ -33,4 +34,9 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(talkerById);
+});
+
+app.post('/login', (req, res) => {
+  const token = createToken();
+  return res.status(200).json({ token });
 });
