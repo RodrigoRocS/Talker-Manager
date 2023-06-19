@@ -1,6 +1,8 @@
 const express = require('express');
 const readTalkers = require('./utils/readFile');
 const createToken = require('./utils/createToken');
+const validateEmail = require('./middlewares/validateEmail');
+const validatePsw = require('./middlewares/validatePsw');
 
 const app = express();
 
@@ -36,7 +38,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(talkerById);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', validateEmail, validatePsw, (req, res) => {
   const token = createToken();
   return res.status(200).json({ token });
 });
