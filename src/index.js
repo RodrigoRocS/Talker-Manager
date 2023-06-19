@@ -1,6 +1,8 @@
 const express = require('express');
+const readTalkers = require('./utils/readFile');
 
 const app = express();
+
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
@@ -13,4 +15,12 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker', async (_req, res) => {
+  const talkers = await readTalkers();
+  if (talkers.length === 0) {
+    return res.status(200).json([]);
+  }
+  return res.status(200).json(talkers);
 });
