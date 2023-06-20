@@ -86,3 +86,11 @@ validateRate,
   await writeTalkers(talkers);
   res.status(200).send(updTalker);
 });
+
+app.delete('/talker/:id', auth, async (req, res) => {
+  const talkerId = Number(req.params.id);
+  const talkers = await readTalkers();
+  const updTalkers = talkers.filter((e) => e.id !== talkerId);
+  await writeTalkers(updTalkers);
+  res.sendStatus(204);
+});
