@@ -66,3 +66,23 @@ validateRate,
   await writeTalkers(talkers);
   res.status(201).send(newTalker);
 });
+
+app.put('/talker/:id',
+auth,
+validateName,
+validateAge,
+validadeTalk,
+validateWatchedAt,
+validateRate,
+      async (req, res) => {
+  const talkerId = Number(req.params.id);
+  const talkerBody = req.body;
+  const talkers = await readTalkers();
+  const index = talkers.findIndex((e) => e.id === talkerId);
+  if (index < 1) { return res.status(404).json({ message: 'Pessoa palestrante não encontrada' }); }
+  const updTalker = { id: talkerId, ...talkerBody };
+  talkers.splice(index, 1, updTalker);
+  
+  await writeTalkers(talkers);
+  res.status(200).send(updTalker);
+});
