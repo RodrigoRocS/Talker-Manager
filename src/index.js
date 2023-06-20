@@ -27,6 +27,17 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', auth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readTalkers();
+  if (!q || q.trim() === '') {
+    res.status(200).json(talkers);
+  } else {
+    const filteredTalkers = talkers.filter((e) => e.name.includes(q));
+    res.status(200).json(filteredTalkers);
+  }
+});
+
 app.get('/talker', async (_req, res) => {
   const talkers = await readTalkers();
   if (talkers.length === 0) {
