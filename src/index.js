@@ -12,6 +12,7 @@ const validateWatchedAt = require('./middlewares/validateWatchedAt');
 const validateRate = require('./middlewares/validateRate');
 const validateRateParams = require('./middlewares/validateRateParams');
 const validateWatchedAtParams = require('./middlewares/validateWatchedAtParams');
+const validateRatePatch = require('./middlewares/validateRatePatch');
 
 const app = express();
 
@@ -118,5 +119,16 @@ app.delete('/talker/:id', auth, async (req, res) => {
   const talkers = await readTalkers();
   const updTalkers = talkers.filter((e) => e.id !== talkerId);
   await writeTalkers(updTalkers);
+  res.sendStatus(204);
+});
+
+app.patch('/talker/rate/:id', auth, validateRatePatch, async (req, res) => {
+  const talkerId = Number(req.params.id);
+  const { rate } = req.body;
+  const talkers = await readTalkers();
+  const index = talkers.findIndex((e) => e.id === talkerId);
+  talkers[index].talk.rate = rate;
+  await writeTalkers(talkers);
+
   res.sendStatus(204);
 });
