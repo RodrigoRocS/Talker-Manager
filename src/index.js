@@ -11,6 +11,7 @@ const validadeTalk = require('./middlewares/validadeTalk');
 const validateWatchedAt = require('./middlewares/validateWatchedAt');
 const validateRate = require('./middlewares/validateRate');
 const validateRateParams = require('./middlewares/validateRateParams');
+const validateWatchedAtParams = require('./middlewares/validateWatchedAtParams');
 
 const app = express();
 
@@ -28,8 +29,12 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
-app.get('/talker/search', auth, validateRateParams, async (req, res) => {
-  const { q, rate } = req.query;
+app.get('/talker/search',
+ auth,
+ validateRateParams,
+ validateWatchedAtParams,
+ async (req, res) => {
+  const { q, rate, date } = req.query;
   const talkers = await readTalkers();
   let filteredTalkers = talkers;
 
@@ -39,6 +44,10 @@ app.get('/talker/search', auth, validateRateParams, async (req, res) => {
 
   if (rate) {
     filteredTalkers = filteredTalkers.filter((el) => el.talk.rate === Number(rate));
+  }
+
+  if (date) {
+    filteredTalkers = filteredTalkers.filter((ele) => ele.talk.watchedAt === date);
   }
 
   res.status(200).json(filteredTalkers);
