@@ -13,6 +13,7 @@ const validateRate = require('./middlewares/validateRate');
 const validateRateParams = require('./middlewares/validateRateParams');
 const validateWatchedAtParams = require('./middlewares/validateWatchedAtParams');
 const validateRatePatch = require('./middlewares/validateRatePatch');
+const { findAll } = require('./db/talkerDB');
 
 const app = express();
 
@@ -28,6 +29,23 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker/db', async (_req, res) => {
+  const [result] = await findAll();
+  if (result.length === 0) {
+    return res.status(200).json([]);
+  }
+  const talkersObj = result.map((e) => ({
+    name: e.name,
+    age: e.age,
+    id: e.id,
+    talk: {
+      watchedAt: e.talk_watched_at,
+      rate: e.talk_rate,
+    },
+  }));
+  res.status(200).json(talkersObj);
 });
 
 app.get('/talker/search',
